@@ -1,0 +1,36 @@
+{
+  "features": [
+    {
+      "feature_type": "id_feature",
+      "feature_name": "pay",
+      "expression": "item:pay",
+      "value_type": "Float"
+    },
+    {
+      "feature_type": "id_feature",
+      "feature_name": "atc",
+      "expression": "item:atc",
+      "value_type": "Float"
+    },
+    {
+      "feature_type": "id_feature",
+      "feature_name": "click",
+      "expression": "item:click",
+      "value_type": "Float"
+    },
+    {
+      "feature_type": "id_feature",
+      "feature_name": "gmv",
+      "expression": "item:gmv",
+      "value_type": "Float",
+      "need_prefix" : false
+    },
+    {
+      "feature_type": "id_feature",
+      "feature_name": "price_percent",
+      "expression": "item:price_percent",
+      "value_type": "Float",
+      "need_prefix" : false
+    }
+  ]
+}

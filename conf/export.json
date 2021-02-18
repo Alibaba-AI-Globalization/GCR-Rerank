@@ -1,0 +1,102 @@
+{
+  "data": {
+    "critic_train": "./tmp/critic_data",
+    "critic_valid": "./tmp/critic_data",
+    "critic_test": "./tmp/critic_data",
+    "generator_train": "./tmp/generator_data",
+    "generator_valid": "./tmp/generator_data",
+    "generator_test": "./tmp/generator_data",
+    "critic_result_table": "./tmp/critic_predict_data",
+    "generator_result_table": "./tmp/generator_result_data"
+  },
+  "feature_conf": {
+    "input": "conf/fg_v10.json",
+    "label": "conf/label.json",
+    "critic_fpre": "conf/critic/fpre_v10.json",
+    "critic_features": "conf/critic/features_fs_v1.json",
+    "generator_fpre": "conf/generator/fpre_v7.json",
+    "generator_features": "conf/generator/features_v8.json"
+  },
+  "path": {
+    "checkpoint_dir": "./checkpoints/${model}/${model}_${experiment}_${version}/",
+    "checkpoint_critic": "./checkpoints/critic/critic_${experiment}_${version}/",
+    "checkpoint_generator": "./checkpoints/generator/generator_${experiment}_${version}/",
+    "checkpoint_asp_generator": "./checkpoints/generator/generator_${experiment}_${version}/",
+    "summary_dir": "./summaries/${model}/${model}_${experiment}_${version}/",
+	"export_dir": "./checkpoints/export/"
+  },
+  "distribution": {
+    "cluster": "{\\\"ps\\\":{\\\"count\\\":1,\\\"memory\\\":5000},  \\\"worker\\\":{\\\"count\\\":10, \\\"gpu\\\":20, \\\"cpu\\\":100,\\\"memory\\\":2000}}",
+    "checkpoint_sec": 600,
+    "cluster_export": "{\\\"ps\\\":{\\\"count\\\":1,\\\"memory\\\":2000},  \\\"worker\\\":{\\\"count\\\":1, \\\"gpu\\\":20, \\\"cpu\\\":100,\\\"memory\\\":2000}}"
+  },
+  "critic_model": {
+    "name": "critic",
+    "train": {
+      "epoch": 3,
+      "train_step": 1000,
+      "summary_step": 100,
+      "log_step": 100,
+      "optimizer": "adam",
+      "learning_rate": 1e-3,
+      "batch_size": 2,
+      "label_type": "merge",
+      "sample_weights": "0.05,0.8,3.0,46.0"
+    },
+    "architecture": {
+      "dnn_units": [128, 32],
+      "dnn_activation" : ["relu", "relu"],
+      "pair_net_units": [256, 128, 64],
+      "pair_net_activation": ["relu", "relu", "relu"],
+      "predict_net_units": [256, 128, 64],
+      "predict_net_activation": ["relu", "relu", "relu"],
+      "attention_net_units": [32, 32],
+      "attention_net_activation": ["relu", "relu"],
+      "add_diversity": true
+    }
+  },
+  "generator_model": {
+    "name": "generator",
+    "train": {
+      "epoch": 100,
+      "train_step":1000,
+      "summary_step": 100,
+      "log_step": 100,
+      "optimizer": "adam",
+      "learning_rate": 0.001,
+      "batch_size": 2,
+      "critic_score_weight": 1,
+      "reward_type": "subtract_mean",
+      "use_neg_diversity": true,
+      "diversity_weight": 0.1,
+      "target_score": "log_add",
+      "use_buffer": true,
+      "sample_buffer_size": 20,
+      "generate_loss_type": "entropy",
+      "gradient_clip_norm": 0.1,
+      "gradient_clip_type": "norm",
+      "use_ppo": true,
+      "isp_mode": false,
+      "user_power_mode": false
+    },
+    "architecture": {
+      "generate_units": [64, 64, 32, 32, 16],
+      "generate_activation": ["relu", "relu", "relu", "relu", "relu"],
+      "sc_encoder": "self_attention",
+      "sc_gru_dimension": 32,
+      "transformer_dim": 32,
+      "transformer_head": 8,
+      "price_gru_dimension": 4,
+      "score_gru_dimension": 4,
+      "embed_gru_dimension": 4,
+      "use_candidate_size": 50,
+      "add_diversity": "true",
+      "use_position": false,
+      "score_type": "softmax",
+      "sample_type": "softmax"
+    }
+  },
+  "online_model": "rerank_lzd",
+  "rerank_type": "cr",
+  "is_online": true
+}
